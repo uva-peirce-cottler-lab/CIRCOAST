@@ -51,7 +51,7 @@ end; close(hw);
 % Randomly permute study group number assignment, create distribution of test statistic
 %Cache disk with premutation IDs
 permutation_pval_path = [csv_path '/temp_data/permutation_pvalues.mat'];
-mkdir([csv_path '/temp_data/']);
+if isempty(dir([csv_path '/temp_data/'])); mkdir([csv_path '/temp_data/']);end
 if isempty(dir((permutation_pval_path))) || ClearPreviousData
     
     % Stare pvalues in var

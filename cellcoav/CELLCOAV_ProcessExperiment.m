@@ -15,6 +15,8 @@ UseMonteCarloModel=0;
 if csv_name==0; return; end
 csv_path=csv_path(1:end-1);
 
+if isempty(dir([csv_path '/results/'])); mkdir([csv_path '/results/']); end
+delete([csv_path '/results/*']);
 
 if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
     %% Parse CSV file containing experimental data
@@ -61,7 +63,7 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
         eval(['csv_st.' f{n} '(ix)=[];'])
     end
     % keyboard
-    
+%     keyboard
     % Identify sample groups so images from same eye are joined
     unq_sample_groups = unique([csv_st.sample_id csv_st.group_id],'rows');
     
@@ -94,7 +96,7 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
         % Load images into cell
         imgs_names='';
         for k = 1:numel(imgs_ind{n})
-            img_full_path = [csv_path '\thresh_images\' csv_st.img_name{imgs_ind{n}(k)}];
+            img_full_path = [csv_path '/' csv_st.img_path{imgs_ind{n}(k)}];
             img =  imread(img_full_path);% '.tif']);
             if size(img,3)==1; BackgroundChannelIndex=1; end
             imgs_cell{k} = img(:,:,BackgroundChannelIndex)>0;
@@ -156,13 +158,17 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
     % One sample cellcoav test: does group have enriched coloc.?
     cellcoav_1s_pval = CELLCOAV_1S(sim_st.bmrp_cellcoav_p(sim_st.group_id==group_ids(1)),1);
     legend({'Random',group_names{group_ids(1)}})
+    saveas(gcf,[csv_path sprintf('/results/1S_CELLCOAV_[%s]_[p]%.3e.jpg',...
+        group_names{group_ids(1)},cellcoav_1s_pval)]); close(gcf);
     fprintf('[%s] CELLCOAV_1S p:%.4e\n',group_names{group_ids(1)},cellcoav_1s_pval);
     
     cellcoav_1s_pval = CELLCOAV_1S(sim_st.bmrp_cellcoav_p(sim_st.group_id==group_ids(2)),1);
-    legend({'Random',group_names{group_ids(2)}})
+    legend({'Random',group_names{group_ids(2)}});
+    saveas(gcf,[csv_path sprintf('/results/1S_CELLCOAV_[%s]_[p]%.3e.jpg',...
+        group_names{group_ids(2)},cellcoav_1s_pval)]); close(gcf);
     fprintf('[%s] CELLCOAV_1S p:%.4e\n',group_names{group_ids(2)},cellcoav_1s_pval);
 
-    
+%     keyboard
     save([csv_path '/sim_st.mat']);
 else
     load([csv_path '/sim_st.mat']);
@@ -178,7 +184,7 @@ set(gca,'fontsize',7,'fontname','helvetica')
 set(gca,'XTickLabel',group_names,'fontsize',8);
 ylabel('Injected Cells/FOV','fontsize',8)
 set(gcf,'position', [100 100 160 140])
-
+saveas(gcf,[csv_path sprintf('/results/InjectedCells_p_FOV_[p]%.3e.jpg',p)]); close(gcf);
 
 % EC Cell Density between groups
 boxplot(sim_st.img_vessel_frac,sim_st.group_id-1)
@@ -188,13 +194,15 @@ set(gca,'fontsize',7,'fontname','helvetica')
 set(gca,'XTickLabel',group_names,'fontsize',7);
 ylabel('ECs/FOV','fontsize',8)
 set(gcf,'position', [100 100 160 140])
-
+saveas(gcf,[csv_path sprintf('/results/ECs_p_FOV_[p]%.4e.jpg',p)]); close(gcf);
 
 % Two sample cellcoav test, do groups have unique vessel colocalization?
 cellcoav_2s_p = CELLCOAV_2S(sim_st.bmrp_cellcoav_p, sim_st.group_id,csv_path,ClearPreviousData);
 fprintf('2S CELLCOAV [%s,%s,] p: %.3e\n',...
     group_names{group_ids(1)},group_names{group_ids(2)},cellcoav_2s_p);
-
+saveas(gcf,[csv_path sprintf('/results/2S_CELLCOAV_[%s,%s]_[p]%.3e.jpg',...
+        group_names{group_ids(1)},group_names{group_ids(2)},...
+        cellcoav_2s_p)]); close(gcf);
  
 end
 

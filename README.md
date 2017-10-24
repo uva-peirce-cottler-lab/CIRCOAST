@@ -8,6 +8,7 @@ User Directions
 --------------------------------------------------------------------------------
 
 Note: Example images found in the "test_images" folder in this directory.
+Note2: Experiment data download links in [ARCAS wiki](https://github.com/uva-peirce-cottler-lab/ARCAS/wiki)
 
 ## Startup
 1. Open the file "USER_INITIALIZE.m" in Matlab.
