@@ -1,6 +1,5 @@
-function ArcasGui_ProcessExperiment()
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function CELLCOAV_ProcessExperiment()
+% Analyzes cellular colocalization experiment with 2 study groups 
 close all
 
 % Flags
@@ -12,7 +11,8 @@ UseMonteCarloModel=0;
 
 
 
-[csv_name, csv_path] = uigetfile('*.csv','Select CSV of Manually Counted Results');
+[csv_name, csv_path] = uigetfile('*.csv','Select CSV of Cell Coloc. Results');
+if csv_name==0; return; end
 csv_path=csv_path(1:end-1);
 
 
@@ -23,8 +23,8 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
     % split text into lines
     csv_lines = regexp(csv_txt, '\r\n|\n\rdb|\n','split');
     
-    % Load variables, for example
-    % BackgroundChannelIndex = 1; group_names={'Live Cells','Dead Cells'};
+    % Load variables in header of csv file, for example:
+    %    BackgroundChannelIndex = 1; group_names={'Live Cells','Dead Cells'};
     elem = @(x) x{1};
     eval(elem(regexp(csv_lines{1},'"(.*)"','tokens','once')));
     
@@ -34,7 +34,7 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
     csv_fields(cellfun(@(x) numel(x) ~= nfieldnames,csv_fields))=[];
     csv_data = vertcat(csv_fields{:});
     csv_fieldnames = csv_data(1,:);
-    for c = 1:size(csv_data,2);
+    for c = 1:size(csv_data,2)
         if isnan(str2double(csv_data{2,c}))
             csv_st.(csv_data{1,c}) = csv_data(2:end,c);
         else csv_st.(csv_data{1,c}) = cellfun(@(x) str2double(x),csv_data(2:end,c));
@@ -55,7 +55,6 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
     end
     
     % Exclude entries with no cells/events
-    % keyboard
     ix=csv_st.total==0;
     fprintf('Exluding %i images with no events.\n',sum(ix));
     for n=1:numel(f)
@@ -88,11 +87,9 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
         sim_st.sample_id(n) = unq_sample_groups(n,1);
         sim_st.group_id(n) = unq_sample_groups(n,2);
         
-        fprintf('Sample: %.f/%.f, Group %.f/%.f: ',sim_st.sample_id(n),size(unq_sample_groups,1),...
+        fprintf('Sample: %.f/%.f, Group %.f/%.f: \n',sim_st.sample_id(n),size(unq_sample_groups,1),...
             sim_st.group_id(n),size(unq_sample_groups,1))
-        
-        %     if sim_st.sample_id(n)==1; cell_diam_um = 11; else cell_diam_um = 8; end
-        
+
         
         % Load images into cell
         imgs_names='';
@@ -108,10 +105,8 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
             sum(cellfun(@(x) numel(x(:)),imgs_cell));
         sim_st.imgs_names{n} = imgs_names;
         
-        %     keyboard
-        % Calculate stats for hybrid image
-        % Record Img name, whether live/dead
-        
+
+        % Calculate stats for hybrid image        
         sim_st.img_names{n} = csv_st.img_name{imgs_ind{n}};
         sim_st.num_imgs(n) = numel(imgs_ind{n});
         sim_st.exp_hits(n) = sum(csv_st.hits(imgs_ind{n}));
@@ -130,25 +125,25 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
         end
         
         fract_area = mean(cellfun(@(x) sum(x(:))/numel(x), imgs_cell,'UniformOutput',1));
-        fprintf('Obs: %.2f, Sim: %.2f\t%s\n',sim_st.exp_hits(n)/sim_st.exp_total(n),fract_area,'');%imgs_string);
+        fprintf('Observed ICF: %.2f\n MCMRP uICF: %.2f\t%s\n',sim_st.exp_hits(n)/sim_st.exp_total(n),fract_area,'');%imgs_string);
         
         % Calculate mean and std with binomial distribution, and hyp test
         out_st = CELLCOAV_BMRP(imgs_cell, cell_diam_um, umppix,...
             sim_st.exp_total(n),'n_obs_success',sim_st.exp_hits(n));
         f = fields(out_st);
         for k =1:numel(f); eval(['sim_st.' f{k} '(n)=out_st.' f{k} ';']); end
+        fprintf('BMRP uICF: %.3f\n', out_st.bmrp_icf_mean);
         
         % Calculate mean and std with binomial distribution, and hyp test
         out_st = CELLCOAV_HMRP(imgs_cell, cell_diam_um, umppix,...
             sim_st.exp_total(n),'n_obs_success', sim_st.exp_hits(n));
         f = fields(out_st);
         for k =1:numel(f); eval(['sim_st.' f{k} '(n)=out_st.' f{k} ';']); end
+        fprintf('HMRP uICF: %.3f\n', out_st.hmrp_icf_mean);
         
-        %     keyboard
     end
     
 
-    % keyboard
     if FilterUselessImages
         ind = sim_st.exp_total<sim_st.binom_min_ntrials;
         %     ind = sim_st.exp_total >150;
@@ -158,8 +153,7 @@ if isempty(dir([csv_path '/sim_st.mat'])) || ClearPreviousData
     
     group_ids = unique(sim_st.group_id);
     
-    keyboard
-    
+    % One sample cellcoav test: does group have enriched coloc.?
     cellcoav_1s_pval = CELLCOAV_1S(sim_st.bmrp_cellcoav_p(sim_st.group_id==group_ids(1)),1);
     legend({'Random',group_names{group_ids(1)}})
     fprintf('[%s] CELLCOAV_1S p:%.4e\n',group_names{group_ids(1)},cellcoav_1s_pval);
@@ -175,17 +169,12 @@ else
 end
 
 
-
-% keyboard
-
-% Calulate vessel Density
-
 % Plot cell density between groups
 inj_cells_p_img = sim_st.exp_total./sim_st.num_imgs;
 boxplot(inj_cells_p_img,sim_st.group_id-1)
 set(gca,'fontsize',7,'fontname','helvetica')
-[h, p]=ttest2(inj_cells_p_img(sim_st.group_id==1),inj_cells_p_img(sim_st.group_id==2))
-mean(inj_cells_p_img(sim_st.group_id==2))./mean(inj_cells_p_img(sim_st.group_id==1))
+[h, p]=ttest2(inj_cells_p_img(sim_st.group_id==1),inj_cells_p_img(sim_st.group_id==2));
+% mean(inj_cells_p_img(sim_st.group_id==2))./mean(inj_cells_p_img(sim_st.group_id==1))
 set(gca,'XTickLabel',group_names,'fontsize',8);
 ylabel('Injected Cells/FOV','fontsize',8)
 set(gcf,'position', [100 100 160 140])
@@ -194,15 +183,17 @@ set(gcf,'position', [100 100 160 140])
 % EC Cell Density between groups
 boxplot(sim_st.img_vessel_frac,sim_st.group_id-1)
 set(gca,'fontsize',7,'fontname','helvetica')
-[h, p]=ttest2(sim_st.img_vessel_frac(sim_st.group_id==1),sim_st.img_vessel_frac(sim_st.group_id==2))
-mean(sim_st.img_vessel_frac(sim_st.group_id==2))./mean(sim_st.img_vessel_frac(sim_st.group_id==1))
+[h, p]=ttest2(sim_st.img_vessel_frac(sim_st.group_id==1),sim_st.img_vessel_frac(sim_st.group_id==2));
+% mean(sim_st.img_vessel_frac(sim_st.group_id==2))./mean(sim_st.img_vessel_frac(sim_st.group_id==1))
 set(gca,'XTickLabel',group_names,'fontsize',7);
 ylabel('ECs/FOV','fontsize',8)
 set(gcf,'position', [100 100 160 140])
 
 
-% keyboard
+% Two sample cellcoav test, do groups have unique vessel colocalization?
 cellcoav_2s_p = CELLCOAV_2S(sim_st.bmrp_cellcoav_p, sim_st.group_id,csv_path,ClearPreviousData);
+fprintf('2S CELLCOAV [%s,%s,] p: %.3e\n',...
+    group_names{group_ids(1)},group_names{group_ids(2)},cellcoav_2s_p);
 
  
 end

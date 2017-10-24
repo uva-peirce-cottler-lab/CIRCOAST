@@ -22,7 +22,7 @@ function varargout = ArcasGui(varargin)
 
 % Edit the above text to modify the response to help ArcasGui
 
-% Last Modified by GUIDE v2.5 26-May-2014 10:24:29
+% Last Modified by GUIDE v2.5 23-Oct-2017 15:41:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -709,3 +709,19 @@ grid on
 beautifyAxis(gca)
 set(gcf,'Position', [100 100 260 260])
 keyboard
+
+
+% --------------------------------------------------------------------
+function process_menu_Callback(hObject, eventdata, handles)
+% hObject    handle to process_menu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+
+% --------------------------------------------------------------------
+function process_exp_submenu_Callback(hObject, eventdata, handles)
+% hObject    handle to process_exp_submenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+CELLCOAV_ProcessExperiment();

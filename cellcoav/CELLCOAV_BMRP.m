@@ -27,7 +27,7 @@ end
 % Calculate success rate across image, assume images may be diff. pixel dimensions
 % if isempty(p_success)
 p_success = CELLCOAV_CellDilateVessFrac(imgs_cell,cell_diam_um,umppix);
-fprintf('BM P Success:%.3f\n',p_success)
+% fprintf('BMRP ICF:%.3f\n',p_success)
 % end
 
 % General Method Calculating Mean from PDF

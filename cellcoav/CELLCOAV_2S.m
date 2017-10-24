@@ -58,24 +58,24 @@ if isempty(dir((permutation_pval_path))) || ClearPreviousData
     p_val_sim = NaN(1,n_rounds);
     
     % Get number of logical cores
-    num_log_cores = str2double(regexp(evalc('feature(''numcores'')'),...
-        '(\d*).logical','tokens','once'));
+%     num_log_cores = str2double(regexp(evalc('feature(''numcores'')'),...
+%         '(\d*).logical','tokens','once'));
     
     %Start parallel processing
-    delete(gcp)
-    c = parcluster;
-    c.NumWorkers = max([num_log_cores-1 3]);
-    saveProfile(c);
-    parpool(7);
+%     delete(gcp)
+%     c = parcluster;
+%     c.NumWorkers = max([num_log_cores-1 3]);
+%     saveProfile(c);
+%     parpool(7);
     
-    fprintf('%s\n',datetime('now'));
+%     fprintf('%s\n',datetime('now'));
     parfor_progress(100);
     parfor n=1:n_rounds
          [p_val_sim(n)] = ranksum(grp_var1(n,:), grp_var2(n,:));
         if mod(n,n_rounds/100)==0; parfor_progress; end
     end
     parfor_progress(0);
-    fprintf('%s\n',datetime('now'));
+%     fprintf('%s\n',datetime('now'));
     
 
     save(permutation_pval_path,'p_val_sim','-v7.3');
@@ -121,6 +121,6 @@ set(gcf,'position', [100 100 200 150])
 axis([x y]);
 hold off
 
-fprintf('GroupPerm P value: %f\n', pval);
+% fprintf('GroupPerm P value: %f\n', pval);
 
-keyboard
+% keyboard

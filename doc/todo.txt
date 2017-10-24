@@ -1,11 +1,2 @@
 
-Add pearson correlation for simple param sweeps and add to figure
-
-VesselGenerator
-Score segments based on max bwdist of the holes they lie adjacent to
-
-To Do:
-Complete first draft of figures
-Complete figure captions
-Code GUI to make experimental pipeline
-write paper
+ToDo:
