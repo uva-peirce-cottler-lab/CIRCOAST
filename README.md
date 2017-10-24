@@ -1,4 +1,4 @@
-## ARCAS: Automated Random Cell Association Simulator
+# ARCAS: Automated Random Cell Association Simulator
 
 This software project provides a statistical hypothesis test (CELLCOAV) for changes in cellular colocalization with the vasculature, and provide a suite of tools to study cellular colocalization with a variety of models (ARCAS).
 
@@ -9,12 +9,12 @@ User Directions
 
 Note: Example images found in the "test_images" folder in this directory.
 
-#Startup
+## Startup
 1. Open the file "USER_INITIALIZE.m" in Matlab.
 2. Run this file within the matlab editor (Either hit Run icon in editor or hit F5).
 3. Wait a couple of seconds for the program to pop up. 
 
-#Basic GUI Operation
+## Basic GUI Operation
 1. Click "Load Image" and choose an image to analyze.
 2. Set the appropriate parameters for the image
     1. Number of Trials: total number of Monte Carlo trials to run in simulation.You can leave at 100,000, that is sufficient.
@@ -33,14 +33,14 @@ Note: Example images found in the "test_images" folder in this directory.
 7. Hit "Run Simulation" for all of the requested trials to be run.
 8. The mean colocalization fraction and standard deviation will be displayed at the bottom of the window for the Monte Carlo Model of Random Placement and Binomial Model of Random Placement.
     
-#Advance Operation
+## Advance Operation
 The actual CELLCOAV statistics are conducted in datasets of images with two study groups. Input data required for these tests include (1) the thresholded (binary) images, and (2) a csv file that assigns each binary image to a group, along with the observed total number of COIs (cells of interest such as injected cells, etc.) and colocalizing cells.
 
 From the ARCAS GUI, select Process>Process Experiment a from a CSV file that contains the required information (please see example data for syntax). 
-The program will 
+The program will calculate:
 1. CELLVCOAV: measure colcoalization versus random placement with a binomial hypothesis test for _each individual image_.
-2. 1S-CELLCOAV: measure colocalization versus random placement for an entire _study group_.
-3. 2S-CELLCOAV: measure coloczation differences between _two study groups_
+2. 1S-CELLCOAV: measure colocalization versus random placement for an entire _study group of images_.
+3. 2S-CELLCOAV: measure coloczation differences between _two study groups_.
 
 p values are printed to the matlab command line and results saved in the same directory as the input CSV file.
     
