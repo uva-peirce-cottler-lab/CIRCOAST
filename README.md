@@ -1,6 +1,6 @@
 # ARCAS: Automated Random Cell Association Simulator
 
-This software project provides a statistical hypothesis test (CELLCOAV) for changes in cellular colocalization with the vasculature, and provide a suite of tools to study cellular colocalization with a variety of models (ARCAS).
+This software project provides a statistical hypothesis test (CRICOAST) for changes in cellular colocalization with the network structures such as vascular networks, and provide a suite of tools to study cellular colocalization with a variety of models (ARCAS).
 
 
 --------------------------------------------------------------------------------
@@ -35,13 +35,13 @@ User Directions
 8. The mean colocalization fraction and standard deviation will be displayed at the bottom of the window for the Monte Carlo Model of Random Placement and Binomial Model of Random Placement.
     
 ## Advance Operation
-The actual CELLCOAV statistics are conducted in datasets of images with two study groups. Input data required for these tests include (1) the thresholded (binary) images, and (2) a csv file that assigns each binary image to a group, along with the observed total number of COIs (cells of interest such as injected cells, etc.) and colocalizing cells.
+The actual CIRCOAST statistics are conducted in datasets of images with two study groups. Input data required for these tests include (1) the thresholded (binary) images, and (2) a csv file that assigns each binary image to a group, along with the observed total number of COIs (cells of interest such as injected cells, etc.) and colocalizing cells.
 
 From the ARCAS GUI, select Process>Process Experiment a from a CSV file that contains the required information (please see example data for syntax). 
 The program will calculate:
 1. CELLVCOAV: measure colcoalization versus random placement with a binomial hypothesis test for _each individual image_.
-2. 1S-CELLCOAV: measure colocalization versus random placement for an entire _study group of images_.
-3. 2S-CELLCOAV: measure coloczation differences between _two study groups_.
+2. 1S-CIRCOAST: measure colocalization versus random placement for an entire _study group of images_.
+3. 2S-CIRCOAST: measure coloczation differences between _two study groups_.
 
 p values are printed to the matlab command line and results saved in the same directory as the input CSV file.
     
