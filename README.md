@@ -1,10 +1,16 @@
 # CIRCOAST: a statistical hypothesis test for cellular colocalization with network structures
 
-This software project provides a statistical hypothesis test (CRICOAST) for changes in cellular colocalization with the network structures such as vascular networks, and provide a suite of tools to study cellular colocalization with a variety of models (ARCAS).
+This software project provides a statistical hypothesis test (CRICOAST) for changes in cellular colocalization with the network structures such as vascular networks, and provide a suite of tools to study cellular colocalization with a variety of models (ARCAS). 
 
+![CIRCOAST Screenshot](media/circoast_screenshot.jpeg)
 
---------------------------------------------------------------------------------
-User Directions
+This software is used to generate figures for the following paper:
+
+Bruce A Corliss and others, CIRCOAST: a statistical hypothesis test for cellular colocalization with network structures, Bioinformatics, Volume 35, Issue 3, February 2019, Pages 506–514, https://doi.org/10.1093/bioinformatics/bty638
+
+<br>
+
+# User Directions
 --------------------------------------------------------------------------------
 
 * Note: Example images found in the "test_images" folder in this directory.
