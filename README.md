@@ -1,4 +1,4 @@
-# ARCAS: Automated Random Cell Association Simulator
+# CIRCOAST: a statistical hypothesis test for cellular colocalization with network structures
 
 This software project provides a statistical hypothesis test (CRICOAST) for changes in cellular colocalization with the network structures such as vascular networks, and provide a suite of tools to study cellular colocalization with a variety of models (ARCAS).
 
